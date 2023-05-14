@@ -7,6 +7,7 @@ using CartingService.DAL.Interface;
 using CartingService.BLL.Interfaces;
 using CartingService.BLL.Services;
 using CartingService.DAL.Repositories;
+using CartingService.Api.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,11 +34,11 @@ builder.Services.AddVersionedApiExplorer(setup =>
 });
 
 
-builder.Services.AddScoped<ILiteDatabase>(x => new LiteDatabase(builder.Configuration.GetConnectionString("LiteDbName")));
+builder.Services.AddScoped<ILiteDatabase>(x => new LiteDatabase(builder.Configuration.GetConnectionString("LiteDb")));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddScoped<ICartService, CartService>();
-
+builder.Services.AddHostedService<ItemChangesQueueBackgroundService>();
 
 var app = builder.Build();
 

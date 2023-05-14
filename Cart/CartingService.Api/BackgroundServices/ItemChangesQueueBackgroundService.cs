@@ -26,8 +26,8 @@ namespace CartingService.Api.BackgroundServices
             connectionFactory = new ConnectionFactory()
             {
                 HostName = configuration["RabbitMq:HostName"],
-                UserName = configuration["RabbitMq:UserName"],
-                Password = configuration["RabbitMq:Password"]
+      //          UserName = configuration["RabbitMq:UserName"],
+      //          Password = configuration["RabbitMq:Password"]
             };
             var connection = connectionFactory.CreateConnection();
             channel = connection.CreateModel();

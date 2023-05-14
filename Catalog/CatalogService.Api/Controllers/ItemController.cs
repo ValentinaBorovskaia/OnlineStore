@@ -13,10 +13,14 @@ namespace CatalogService.API.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService itemService;
+        private readonly IMessageProducer messageProducer;
+        private readonly IConfiguration configuration;
 
-        public ItemController(IItemService itemService)
+        public ItemController(IItemService itemService, IMessageProducer messageProducer, IConfiguration configuration)
         {
             this.itemService = itemService;
+            this.messageProducer = messageProducer;
+            this.configuration = configuration;    
         }
 
         [HttpGet("{categoryId?}")]
@@ -44,6 +48,7 @@ namespace CatalogService.API.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] Item item)
         {
             var result = await itemService.UpdateItem(id, item);
+            messageProducer.SendMessage(configuration["RabbitMq:ItemQueueName"], result);
             return Ok(result);
         }
 

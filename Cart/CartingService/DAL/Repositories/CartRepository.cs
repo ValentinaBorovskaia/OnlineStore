@@ -14,9 +14,9 @@ namespace CartingService.DAL.Repositories
     public class CartRepository : ICartRepository
     {
         private readonly ILiteDatabase liteDatabase;
-        public CartRepository()
+        public CartRepository(ILiteDatabase liteDatabase)
         {
-            liteDatabase = new LiteDatabase(@"CartDatabase");
+            this.liteDatabase = liteDatabase;
         }
         public Cart GetCartById(Guid cartId)
         {
@@ -28,7 +28,7 @@ namespace CartingService.DAL.Repositories
             try
             {
                 var colletion = liteDatabase.GetCollection<Cart>();
-                var existingCart = colletion.FindOne(x => true);
+                var existingCart = colletion.FindOne(x => x.Id == cart.Id);
                 if (existingCart == null)
                 {
                     colletion.Insert(cart);

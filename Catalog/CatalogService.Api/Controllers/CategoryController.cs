@@ -13,13 +13,11 @@ namespace CatalogService.Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService categoryService;
-        private readonly IMessageProducer messageProducer;
 
         public CategoryController(ICategoryService categoryService,
             IMessageProducer messageProducer)
         {
             this.categoryService = categoryService;
-            this.messageProducer = messageProducer;
         }
 
         [HttpGet]

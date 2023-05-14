@@ -6,7 +6,6 @@ namespace CatalogService.Domain.Models;
 
 public partial class Category
 {
-    [Required]
     public int Id { get; set; }
     [Required]
     [MaxLength(50)]

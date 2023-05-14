@@ -6,7 +6,6 @@ namespace CatalogService.Domain.Models;
 
 public partial class Item
 {
-    [Required]
     public int Id { get; set; }
     [Required]
     [MaxLength(50)]
@@ -22,5 +21,5 @@ public partial class Item
     [Required]
     public int Amount { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 }
