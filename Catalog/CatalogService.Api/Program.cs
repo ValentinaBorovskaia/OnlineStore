@@ -39,6 +39,12 @@ builder.Services.AddSingleton<IMessageProducer>(x =>
     )
 );
 
+builder.Services.AddAuthentication("Bearer")
+    .AddIdentityServerAuthentication("Bearer", options =>
+    {
+        options.ApiName = "catalogApi";
+        options.Authority = "https://localhost:44322";
+    });
 
 var app = builder.Build();
 
