@@ -2,6 +2,7 @@
 using CatalogService.Application.Services;
 using CatalogService.Domain;
 using CatalogService.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +11,7 @@ namespace CatalogService.Api.Controllers
 {
     [Route("api/v1/categories")]
     [ApiController]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService categoryService;
@@ -35,6 +37,7 @@ namespace CatalogService.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Post([FromBody] Category category)
         {
             var result = await categoryService.AddCategory(category);
@@ -42,6 +45,7 @@ namespace CatalogService.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Put(int id, [FromBody] Category category)
         {
             var result = await categoryService.UpdateCategory(id, category);
@@ -49,6 +53,7 @@ namespace CatalogService.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await categoryService.DeleteCategory(id);
