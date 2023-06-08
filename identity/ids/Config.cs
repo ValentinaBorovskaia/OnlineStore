@@ -79,16 +79,23 @@ namespace Ids
     public static IEnumerable<ApiScope> ApiScopes =>
       new []
       {
-        new ApiScope("weatherapi.read"),
-        new ApiScope("weatherapi.write"),
+        new ApiScope("carting.modify"),
+        new ApiScope("catalog.read"),
+        new ApiScope("catalog.modify")
       };
     public static IEnumerable<ApiResource> ApiResources => new[]
     {
-      new ApiResource("weatherapi")
+      new ApiResource("carting")
       {
-        Scopes = new List<string> {"weatherapi.read", "weatherapi.write"},
+        Scopes = new List<string> {"carting.modify"},
         ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
         UserClaims = new List<string> {"role"}
+      },
+      new ApiResource("catalog")
+      {
+            Scopes = new List<string> {"catalog.read, catalog.modify"},
+            ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
+            UserClaims = new List<string> {"role"}
       }
     };
 
@@ -103,8 +110,8 @@ namespace Ids
 
           AllowedGrantTypes = GrantTypes.ClientCredentials,
           ClientSecrets = {new Secret("SuperSecretPassword".Sha256())},
-
-          AllowedScopes = {"weatherapi.read", "weatherapi.write"}
+          RequirePkce = false,
+          AllowedScopes = { "carting.modify", "catalog.read", "catalog.modify" }
         },
 
         // interactive client using code flow + pkce
@@ -120,7 +127,7 @@ namespace Ids
           PostLogoutRedirectUris = {"https://localhost:5444/signout-callback-oidc"},
 
           AllowOfflineAccess = true,
-          AllowedScopes = {"openid", "profile", "weatherapi.read"},
+          AllowedScopes = { "carting.modify", "catalog.read", "catalog.modify" },
           RequirePkce = true,
           RequireConsent = true,
           AllowPlainTextPkce = false
