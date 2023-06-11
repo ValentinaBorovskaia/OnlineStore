@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,29 +13,32 @@ namespace CartingService.Api.Controllers.V1
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly ITokenService tokenService;
-        public LoginController(ITokenService tokenService) 
+       
+        public LoginController() 
         {
-            this.tokenService = tokenService;
+          
         }
 
         [HttpPost, Route("login")]
-        public async Task<IActionResult> Login(UserModel model)
+        public async Task<string> Login(UserModel model)
         {
-            try
+            var authenticationUrl = "https://localhost:7103/api/auth/login"; // Replace with the authentication endpoint of App A
+            var loginModel = new { Username = "123", Password = "123" };
+
+            using (var client = new HttpClient())
             {
-                if (string.IsNullOrEmpty(model.Login) ||
-                string.IsNullOrEmpty(model.Password))
-                    return BadRequest("Username and/or Password not specified");
-              var result =  await tokenService.GetToken(model.Login);
-                return Ok(result);
+                var response = await client.PostAsJsonAsync(authenticationUrl, loginModel);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var tokenObject = JObject.Parse(responseContent);
+                    var token = tokenObject["token"].ToString();
+
+                    return token;
+                }
             }
-            catch
-            {
-                return BadRequest
-                ("An error occurred in generating the token");
-            }
-            return Unauthorized();
+
+            return null;
         }
     }
 }
