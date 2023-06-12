@@ -8,7 +8,21 @@ using CartingService.BLL.Interfaces;
 using CartingService.BLL.Services;
 using CartingService.DAL.Repositories;
 using CartingService.Api.BackgroundServices;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using CartingService;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+.Build();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,11 +47,31 @@ builder.Services.AddVersionedApiExplorer(setup =>
     setup.SubstituteApiVersionInUrl = true;
 });
 
+var jwtSecretKey = configuration["IdentityServerSettings:JwtSecretKey"];
+var jwtIssuer = configuration["IdentityServerSettings:JwtIssuer"];
+var jwtAudience = configuration["IdentityServerSettings:JwtAudience"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience
+        };
+    });
+
+
 
 builder.Services.AddScoped<ILiteDatabase>(x => new LiteDatabase(builder.Configuration.GetConnectionString("LiteDb")));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddScoped<ICartService, CartService>();
+
 builder.Services.AddHostedService<ItemChangesQueueBackgroundService>();
 
 var app = builder.Build();
@@ -54,13 +88,20 @@ app.UseSwaggerUI(options =>
             $"/swagger/{description.GroupName}/swagger.json",
             description.ApiVersion.ToString()
             );
+
+        options.OAuthClientId("demo_api_swagger");
+        options.OAuthAppName("Demo API - Swagger");
+        options.OAuthUsePkce();
     }
+    
 });
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+

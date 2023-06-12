@@ -2,6 +2,7 @@
 using CatalogService.Application.Services;
 using CatalogService.Domain;
 using CatalogService.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +11,7 @@ namespace CatalogService.API.Controllers
 {
     [Route("api/v1/items")]
     [ApiController]
+    [Authorize]
     public class ItemController : ControllerBase
     {
         private readonly IItemService itemService;
@@ -38,6 +40,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Post([FromBody] Item item)
         {
             var result = await itemService.AddItem(item);
@@ -45,6 +48,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Put(int id, [FromBody] Item item)
         {
             var result = await itemService.UpdateItem(id, item);
@@ -53,6 +57,7 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await itemService.DeleteItem(id);
