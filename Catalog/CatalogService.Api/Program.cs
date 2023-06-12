@@ -67,20 +67,23 @@ builder.Services.AddSingleton<IMessageProducer>(x =>
     )
 );
 
+var jwtSecretKey = configuration["IdentityServerSettings:JwtSecretKey"];
+var jwtIssuer = configuration["IdentityServerSettings:JwtIssuer"];
+var jwtAudience = configuration["IdentityServerSettings:JwtAudience"];
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       .AddJwtBearer(options =>
-       {
-           options.TokenValidationParameters = new TokenValidationParameters
-           {
-               ValidateIssuer = true,
-               ValidIssuer = "your-issuer", // Replace with the token issuer used in App A
-               ValidateAudience = true,
-               ValidAudience = "your-audience", // Replace with the token audience used in App A
-               ValidateIssuerSigningKey = true,
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecretKey123!@#")), // Replace with the secret key used in App A
-               ValidateLifetime = true,
-           };
-       });
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience
+        };
+    });
 
 var app = builder.Build();
 

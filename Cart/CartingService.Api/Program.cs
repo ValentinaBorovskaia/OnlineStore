@@ -18,6 +18,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+.Build();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -41,20 +46,25 @@ builder.Services.AddVersionedApiExplorer(setup =>
     setup.GroupNameFormat = "'v'VVV";
     setup.SubstituteApiVersionInUrl = true;
 });
+
+var jwtSecretKey = configuration["IdentityServerSettings:JwtSecretKey"];
+var jwtIssuer = configuration["IdentityServerSettings:JwtIssuer"];
+var jwtAudience = configuration["IdentityServerSettings:JwtAudience"];
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = "your-issuer", // Replace with the token issuer used in App A
-                ValidateAudience = true,
-                ValidAudience = "your-audience", // Replace with the token audience used in App A
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecretKey123!@#")), // Replace with the secret key used in App A
-                ValidateLifetime = true,
-            };
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience
+        };
+    });
+
 
 
 builder.Services.AddScoped<ILiteDatabase>(x => new LiteDatabase(builder.Configuration.GetConnectionString("LiteDb")));

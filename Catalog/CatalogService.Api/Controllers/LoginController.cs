@@ -1,13 +1,14 @@
-﻿using CartingService.BLL.Interfaces;
+﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CartingService.Api.Controllers.V1
+namespace CatalogService.Api.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,8 +24,8 @@ namespace CartingService.Api.Controllers.V1
         [HttpPost, Route("login")]
         public async Task<string> Login(UserModel model)
         {
-            var authenticationUrl = configuration["AuthEndPoint"];
-
+            var authenticationUrl = configuration["AuthEndPoint"]; 
+;
             using (var client = new HttpClient())
             {
                 var response = await client.PostAsJsonAsync(authenticationUrl, model);
@@ -37,6 +38,7 @@ namespace CartingService.Api.Controllers.V1
                     return token;
                 }
             }
+
             return null;
         }
     }

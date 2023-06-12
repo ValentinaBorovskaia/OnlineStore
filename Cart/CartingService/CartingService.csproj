@@ -104,7 +104,6 @@
     <Compile Include="DAL\Entities\Item.cs" />
     <Compile Include="DAL\Interface\ICartRepository.cs" />
     <Compile Include="DAL\Repositories\CartRepository.cs" />
-    <Compile Include="IdentityServerSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
