@@ -3,6 +3,7 @@ using CatalogService.Application.Services;
 using CatalogService.Domain;
 using CatalogService.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,8 +24,8 @@ namespace CatalogService.API.Controllers
             this.configuration = configuration;    
         }
 
-        [HttpGet("{categoryId?}")]
-        public async Task<IActionResult> Get(int? categoryId, [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
+        [HttpGet("")]
+        public async Task<IActionResult> Get(int? categoryId = null, [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
         {
             var categories = await itemService.GetItems(categoryId, page, pageSize);
             return Ok(categories);
@@ -33,9 +34,24 @@ namespace CatalogService.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var item = itemService.GetItem(id);
+            var item = await itemService.GetItem(id);
             return Ok(item);
         }
+
+        [HttpGet("{id}/details")]
+        public IActionResult GetDetails(int id)
+        {
+            var result = new Dictionary<string, string>
+            {
+                {"model", "the last the best" },
+                {"date of release", "today" },
+                {"size", "any" },
+                {"colour", "your favourite" }
+            };
+
+            return Ok(result);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Item item)

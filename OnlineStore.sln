@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateway", "OcelotApiGateway\OcelotApiGateway.csproj", "{61EA9356-AEEB-40A9-9A45-ABC90F67E60C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 		{188C0018-43AA-4DD8-961A-2FFB8930F7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{188C0018-43AA-4DD8-961A-2FFB8930F7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{188C0018-43AA-4DD8-961A-2FFB8930F7F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EA9356-AEEB-40A9-9A45-ABC90F67E60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EA9356-AEEB-40A9-9A45-ABC90F67E60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EA9356-AEEB-40A9-9A45-ABC90F67E60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EA9356-AEEB-40A9-9A45-ABC90F67E60C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
