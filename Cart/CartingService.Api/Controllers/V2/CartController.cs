@@ -17,7 +17,7 @@ namespace CartingService.API.Controllers.V2
             this.cartService = cartService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{cartId}")]
         public IActionResult Get(Guid id)
         {
             var result = cartService.GetAllItems(id);
